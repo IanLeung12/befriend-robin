@@ -10,7 +10,7 @@ font2 = pygame.font.SysFont("Arpona", 68)
 
 selectbutton = [0] * 2
 for i in range(2):
-    selectbutton[i] = pygame.image.load("Downloads\Creative Teaching\selectbutton" + str(i) + ".png")
+    selectbutton[i] = pygame.image.load("selectbutton" + str(i) + ".png")
 
 BLACK     = (0, 0, 0)
 RED       = (255, 0, 0)
@@ -26,7 +26,7 @@ YELLOW    = (255, 255, 0)
 WHITE     = (255, 245,240)
 clock = pygame.time.Clock()
 
-pygame.mixer.music.load("Downloads\Creative Teaching\waltz.mp3")
+pygame.mixer.music.load("waltz.mp3")
 pygame.mixer.music.set_volume(1)
 pygame.mixer.music.play(loops=-1)
 
@@ -115,7 +115,7 @@ def drawtext(source, x, y):
 
 
 
-iangames = pygame.image.load("Downloads\Creative Teaching\\ian games.jpg").convert()
+iangames = pygame.image.load("ian games.jpg").convert()
 fade = 255
 
 for i in range(240):
@@ -139,9 +139,9 @@ inTitle = True
 messagetimer = 0
 messagedisplay = True
 
-logo = pygame.image.load("Downloads\Creative Teaching\logo.png")
-robin = pygame.image.load("Downloads\Creative Teaching\Robin.png")
-srobin = pygame.image.load("Downloads\Creative Teaching\sRobin.png")
+logo = pygame.image.load("logo.png")
+robin = pygame.image.load("Robin.png")
+srobin = pygame.image.load("sRobin.png")
 robinx = 400
 robiny = 700
 circley = 1500
@@ -177,18 +177,18 @@ while inTitle:
     clock.tick(60)
 
 pygame.mixer.music.stop()
-pygame.mixer.music.load("Downloads\Creative Teaching\Blue Boi.mp3")
+pygame.mixer.music.load("Blue Boi.mp3")
 pygame.mixer.music.play(loops=-1)
-background1 = pygame.image.load("Downloads\Creative Teaching\\background1.png")
-textbox = pygame.image.load("Downloads\Creative Teaching\\textbox.png")
+background1 = pygame.image.load("background1.png")
+textbox = pygame.image.load("textbox.png")
 inscene1 = True
-quitbutton = pygame.image.load("Downloads\Creative Teaching\quit.png")
-pausebutton = pygame.image.load("Downloads\Creative Teaching\pause.png")
+quitbutton = pygame.image.load("quit.png")
+pausebutton = pygame.image.load("pause.png")
 scene1text = ["The birds are chirping, you feel ecstatic. Its your first day in high school!", "You stride forward, eager to make some new friends.", 
 "Suddenly, you notice someone in a wheelchair trying to enter the school", "What do you do?", "null", "The bell rings and you head to your first class"]
 textnum = 0
 clicked = False
-pygame.mixer.Sound("Downloads\Creative Teaching\\birds.wav").play()
+pygame.mixer.Sound("birds.wav").play()
 srobinA = 0
 srobin.set_alpha(srobinA)
 while inscene1:
