@@ -7,6 +7,7 @@ gameWindow = pygame.display.set_mode((WIDTH, HEIGHT))
 
 font = pygame.font.SysFont("Droid Sans Mono Regular", 26)
 font2 = pygame.font.SysFont("Arpona", 68)
+font3 = pygame.font.SysFont("Elephant", 32)
 
 selectbutton = [0] * 2
 for i in range(2):
@@ -64,6 +65,7 @@ def redrawCbutton(text: str, x, y):
         buttonstate = 0
     gameWindow.blit(selectbutton[buttonstate], (x, y))
     gameWindow.blit(mes, (x + 10, y + 10))
+    pygame.event.pump()
     # returns whether or not button is clicked
     return clicked
 
@@ -122,6 +124,14 @@ def drawtext2(source, x, y):
     gameWindow.blit(bordertext, (x - 2, y + 2))
     gameWindow.blit(maintext, (x, y))
 
+def drawtext3(source, x, y):
+    maintext = font3.render(source, True, WHITE)
+    bordertext = font3.render(source, True, BLACK)
+    gameWindow.blit(bordertext, (x + 1, y - 1))
+    gameWindow.blit(bordertext, (x + 1, y + 1))
+    gameWindow.blit(bordertext, (x - 1, y - 1))
+    gameWindow.blit(bordertext, (x - 1, y + 1))
+    gameWindow.blit(maintext, (x, y))
 
 iangames = pygame.image.load("ian games.jpg").convert()
 fade = 255
@@ -150,6 +160,7 @@ messagedisplay = True
 logo = pygame.image.load("logo.png")
 robin = pygame.image.load("Robin.png")
 srobin = pygame.image.load("sRobin.png")
+nametag = pygame.image.load("nametag.png")
 robinx = 400
 robiny = 700
 circley = 1500
@@ -219,6 +230,7 @@ inscene1 = True
 inscene2 = True
 quitbutton = pygame.image.load("quit.png")
 pausebutton = pygame.image.load("pause.png")
+backbutton = pygame.image.load("back.png")
 scene1text = ["The birds are chirping, you feel ecstatic. Its your first day in high school!", "You stride forward, eager to make some new friends.", 
 "Suddenly, you notice someone in a wheelchair trying to enter the school", "What do you do?", "null", "The bell rings and you head to your first class", "null"]
 textnum = 0
@@ -235,7 +247,9 @@ while inscene1:
         inscene2 = False
     elif redrawTbutton(pausebutton, 200, 535):
         pause()
-    elif clicked:
+    elif redrawTbutton(backbutton, 400, 535) and textnum > 0:
+        textnum -= 1 
+    elif clicked and textnum != 3:
         if textnum + 1 < len(scene1text) and textnum != 3:
             textnum += 1
             print(textnum)
@@ -246,9 +260,6 @@ while inscene1:
                 if event.key == pygame.K_ESCAPE:
                     inscene1 = False
                     inscene2 = False
-                elif event.key == pygame.K_LEFT:
-                    if textnum > 0:
-                        textnum -= 1
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     clicked = True
@@ -262,13 +273,13 @@ while inscene1:
             scene1text[4] = "You offer him help. He politely declines, pointing out the door opening button."
             helped = True
     if 4 > textnum >= 2:
-        if srobinA < 254:
-            srobinA += 2
+        if srobinA < 250:
+            srobinA += 3
         srobin.set_alpha(srobinA)
         gameWindow.blit(srobin, (190, 290))
     else:
         srobinA = 0
-    drawtext(scene1text[textnum], 100, 400)
+    drawtext(scene1text[textnum], 90, 400)
     pygame.display.update()
     pygame.event.pump()
     clock.tick(60)
@@ -283,13 +294,14 @@ pygame.mixer.music.load("postmeridie.mp3")
 pygame.mixer.music.play(loops=-1)
 pygame.mixer.Sound("bell.mp3").play()
 textnum = 0
+robinx = 900
 scene2text = ["As you take your seat, you find yourself sitting beside the person from earlier", "null", "null", "poo head"]
 if helped:
     scene2text[1] = "Hey, I'm Robin. I didn't get to thank you earlier, so... Thank You"
     scene2text[2] = "Hey, I'm Robin. I didn't get to thank you earlier, so... Thank You"
 else:
     scene2text[1] = "Hey, I'm Robin, I hope we can make good friends this year"
-    scene2text[2] = "Hey, I'm Robin. I didn't get to thank you earlier, so... Thank You"
+    scene2text[2] = "Hey, I'm Robin. I hope we can make good friends this year"
 wdydchoice = 0
 while inscene2:
     gameWindow.fill(BLACK)
@@ -298,44 +310,55 @@ while inscene2:
     if bg2A < 254:
         bg2A += 1
     else:
+        if 1 <= textnum:
+            gameWindow.blit(nametag, (125, 328))
+            drawtext3("Robin", 135, 335)
+            if robinx > 330:
+                robinx -= 10
+            gameWindow.blit(robin, (robinx, 150))
+        else:
+            robinx = 900
         gameWindow.blit(textbox, (25, 375))
-        drawtext(scene2text[textnum], 100, 400)
+        drawtext(scene2text[textnum], 90, 400)
         if redrawTbutton(quitbutton, 575, 535):
             inscene2 = False
         elif redrawTbutton(pausebutton, 200, 535):
             pause()
+        elif redrawTbutton(backbutton, 400, 535) and textnum > 0:
+            textnum -= 1 
         elif clicked:
             if textnum + 1 < len(scene2text):
                 textnum += 1
                 print(textnum)
                 clicked = False
-    wdydmes = font2.render("How do you respond?", True, BLACK)
-    wdydrect = wdydmes.get_rect(center=(WIDTH/2, 100))
-    if textnum != 2:
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    inscene2 = False
-                elif event.key == pygame.K_LEFT:
-                    if textnum > 0:
-                        textnum -= 1
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    clicked = True
-    else:
-        drawtext2("How do you respond", wdydrect.x, wdydrect.y)
-        if redrawCbutton("Don't talk to me", 200, 150):
-            wdydchoice = 1
-            textnum +=1
-        elif redrawCbutton("Introduce", 450, 150):
-            wdydchoice = 2
-            textnum +=1
-        elif redrawCbutton("Wheelchair?", 200, 275):
-            wdydchoice = 3
-            textnum +=1
-        elif redrawCbutton("Compliment", 450, 275):
-            wdydchoice = 4
-            textnum +=1
+        wdydmes = font2.render("How do you respond?", True, BLACK)
+        wdydrect = wdydmes.get_rect(center=(WIDTH/2, 100))
+        if textnum != 2:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        inscene2 = False
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        clicked = True
+        else:
+            drawtext2("How do you respond", wdydrect.x, wdydrect.y)
+            if redrawCbutton("Don't talk to me", 200, 150):
+                wdydchoice = 1
+                scene2text[3] = "Learn some manners bro."
+                textnum +=1
+            elif redrawCbutton("Introduce", 450, 150):
+                wdydchoice = 2
+                scene2text[3] = username + " huh, thats a nice name."
+                textnum +=1
+            elif redrawCbutton("Wheelchair?", 200, 275):
+                wdydchoice  = 3
+                scene2text[3] = "I don't want to talk about it right now."
+                textnum +=1
+            elif redrawCbutton("Compliment", 450, 275):
+                wdydchoice = 4
+                scene2text[3] = "Thanks, but a wheelchair doesn't make me any less of a person."
+                textnum +=1
     pygame.display.update()
     pygame.event.pump()
     clock.tick(60)
