@@ -7,7 +7,7 @@ gameWindow = pygame.display.set_mode((WIDTH, HEIGHT))
 
 font = pygame.font.SysFont("Droid Sans Mono Regular", 26)
 font2 = pygame.font.SysFont("Arpona", 68)
-font3 = pygame.font.SysFont("Elephant", 32)
+font3 = pygame.font.SysFont("Elephant", 36)
 
 selectbutton = [0] * 2
 for i in range(2):
@@ -228,6 +228,8 @@ background1 = pygame.image.load("background1.png")
 textbox = pygame.image.load("textbox.png")
 inscene1 = True
 inscene2 = True
+inscene3 = True
+inend = True
 quitbutton = pygame.image.load("quit.png")
 pausebutton = pygame.image.load("pause.png")
 backbutton = pygame.image.load("back.png")
@@ -245,6 +247,8 @@ while inscene1:
     if redrawTbutton(quitbutton, 575, 535):
         inscene1 = False
         inscene2 = False
+        inscene3 = False
+        inend = False
     elif redrawTbutton(pausebutton, 200, 535):
         pause()
     elif redrawTbutton(backbutton, 400, 535) and textnum > 0:
@@ -260,6 +264,8 @@ while inscene1:
                 if event.key == pygame.K_ESCAPE:
                     inscene1 = False
                     inscene2 = False
+                    inscene3 = False
+                    inend = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     clicked = True
@@ -286,7 +292,7 @@ while inscene1:
     if textnum == 6:
         inscene1 = False
 
-background2 = pygame.image.load("background2.jpg")
+background2 = pygame.image.load("background2.png")
 bg2A = 0
 background2.set_alpha(bg2A)
 pygame.mixer.music.stop()
@@ -295,7 +301,9 @@ pygame.mixer.music.play(loops=-1)
 pygame.mixer.Sound("bell.mp3").play()
 textnum = 0
 robinx = 900
-scene2text = ["As you take your seat, you find yourself sitting beside the person from earlier", "null", "null", "poo head"]
+scene2text = ["As you take your seat, you find yourself sitting beside the person from earlier.", "null", "null", "null", 
+"The conversation ends as the teacher begins talking.", "When the period nears its end, Robin taps your shoulder.", "Hey, wanna eat lunch together?", 
+"Hey, wanna eat lunch together?", "You willingly accept his offer.", "null"]
 if helped:
     scene2text[1] = "Hey, I'm Robin. I didn't get to thank you earlier, so... Thank You"
     scene2text[2] = "Hey, I'm Robin. I didn't get to thank you earlier, so... Thank You"
@@ -310,21 +318,24 @@ while inscene2:
     if bg2A < 254:
         bg2A += 1
     else:
-        if 1 <= textnum:
+        if 1 <= textnum < 4 or 6 <= textnum:
             gameWindow.blit(nametag, (125, 328))
-            drawtext3("Robin", 135, 335)
+            drawtext3("Robin", 135, 340)
             if robinx > 330:
                 robinx -= 10
-            gameWindow.blit(robin, (robinx, 150))
         else:
-            robinx = 900
+            if robinx < 900:
+                robinx += 20
+        gameWindow.blit(robin, (robinx, 150))
         gameWindow.blit(textbox, (25, 375))
         drawtext(scene2text[textnum], 90, 400)
         if redrawTbutton(quitbutton, 575, 535):
             inscene2 = False
+            inscene3 = False
+            inend = False
         elif redrawTbutton(pausebutton, 200, 535):
             pause()
-        elif redrawTbutton(backbutton, 400, 535) and textnum > 0:
+        elif redrawTbutton(backbutton, 370, 535) and textnum > 0:
             textnum -= 1 
         elif clicked:
             if textnum + 1 < len(scene2text):
@@ -333,32 +344,156 @@ while inscene2:
                 clicked = False
         wdydmes = font2.render("How do you respond?", True, BLACK)
         wdydrect = wdydmes.get_rect(center=(WIDTH/2, 100))
-        if textnum != 2:
+        if textnum != 2 and textnum != 7:
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         inscene2 = False
+                        inscene3 = False
+                        inend = False
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         clicked = True
-        else:
+        elif textnum == 2:
             drawtext2("How do you respond", wdydrect.x, wdydrect.y)
             if redrawCbutton("Don't talk to me", 200, 150):
                 wdydchoice = 1
                 scene2text[3] = "Learn some manners bro."
-                textnum +=1
+                textnum += 1
+                scene2text[8] = "You reluctantly agree, giving him your name on the way."
             elif redrawCbutton("Introduce", 450, 150):
                 wdydchoice = 2
                 scene2text[3] = username + " huh, thats a nice name."
-                textnum +=1
+                textnum += 1
+                scene2text[8] = "You willingly accept his offer."
             elif redrawCbutton("Wheelchair?", 200, 275):
                 wdydchoice  = 3
                 scene2text[3] = "I don't want to talk about it right now."
-                textnum +=1
+                textnum += 1
+                scene2text[8] = "You reluctantly agree, giving him your name on the way."
             elif redrawCbutton("Compliment", 450, 275):
                 wdydchoice = 4
                 scene2text[3] = "Thanks, but a wheelchair doesn't make me any less of a person."
-                textnum +=1
+                textnum += 1
+                scene2text[8] = "You reluctantly agree, giving him your name on the way."
+        elif textnum == 7:
+            if redrawCbutton("Yes", 300, 100) or redrawCbutton("Yes", 300, 250):
+                textnum += 1
+        if textnum == 9:
+            inscene2 = False
+    pygame.display.update()
+    pygame.event.pump()
+    clock.tick(60)
+scene3text = ["The second period ends and you head to your agreed upon meeting spot", "You are surprised to see he is already there waiting for you",
+"Hey " + username + ", wassup?", "Hey " + username + ", wassup?", "null", "What courses do you have?","What courses do you have?", "Aw that sucks, we're only together period 1", 
+"Aw that sucks, we're only together period 1", "Welp, lunch is almost over. See you tommorow " + username + "!",  "Welp, lunch is almost over. See you tommorow " + username + "!",
+"null", "null", "You chuckle, glad that you made your first high school friend.", "null"]
+background3 = pygame.image.load("background3.png")
+bg3A = 0
+background3.set_alpha(bg3A)
+pygame.mixer.music.stop()
+pygame.mixer.music.load("Subwoofer Lullaby.mp3")
+pygame.mixer.music.play(loops=-1)
+pygame.mixer.Sound("bell.mp3").play()
+bg4 = pygame.image.load("background4.png")
+bg4A = 0
+bg4part1 = True
+textnum = 0
+robinx = 900
+while inscene3:
+    gameWindow.fill(BLACK)
+    gameWindow.blit(background3, (0, 0))
+    background3.set_alpha(bg3A)
+    bg4.set_alpha(bg4A)
+    if bg3A < 254:
+        bg3A += 1
+    else:
+        if textnum == 8:
+            if bg4A < 254:
+                bg4A += 2
+            else:
+                textnum += 1
+        if textnum == 9:
+            if bg4A > 253:
+                bg4A -= 0.02
+            elif bg4A > 0:
+                bg4A -= 1
+        if 2 <= textnum < 11 or textnum == 12:
+            gameWindow.blit(nametag, (125, 328))
+            drawtext3("Robin", 135, 340)
+            if robinx > 330:
+                robinx -= 10
+        else:
+            if robinx < 900:
+                robinx += 20
+        gameWindow.blit(robin, (robinx, 150))
+        gameWindow.blit(textbox, (25, 375))
+        drawtext(scene3text[textnum], 90, 400)
+        if redrawTbutton(quitbutton, 575, 535):
+            inscene3 = False
+            inend = False
+        elif redrawTbutton(pausebutton, 200, 535):
+            pause()
+        elif redrawTbutton(backbutton, 370, 535) and textnum > 0:
+            textnum -= 1 
+        elif clicked:
+            if textnum + 1 < len(scene3text):
+                textnum += 1
+                print(textnum)
+                clicked = False
+        if textnum != 3 and textnum != 6 and textnum != 8 and textnum != 10:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        inscene3 = False
+                        inend = False
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        clicked = True
+        elif textnum == 3:
+            if redrawCbutton("I'm good", 200, 150):
+                scene3text[4] = "Great! Same here."
+                textnum += 1
+            elif redrawCbutton("I'm bad", 450,150):
+                scene3text[4] = "Same, I miss summer break"
+                textnum += 1
+            elif redrawCbutton("Bully", 300, 275):
+                scene3text[4] = "Lol. Stop joking, I know you came here 'cause you like me."
+                textnum += 1
+        elif textnum == 6:
+            if redrawCbutton("Tell him", 300, 250):
+                textnum += 1
+        elif textnum == 10:
+            if redrawCbutton("See ya!", 200, 150):
+                scene3text[11] = "YOU: See you tommorow my friend!"
+                scene3text[12] = "Haha, see ya buddy."
+                textnum += 1
+            elif redrawCbutton("~Shy~", 450, 150):
+                scene3text[11] = "YOU: Okay. I-It's not like we're friends or anything though!"
+                scene3text[12] = "Haha, sure buddy."
+                textnum += 1
+            elif redrawCbutton("Say doubts", 200, 275):
+                scene3text[11] = "YOU: Haha, I didn't know a disabled person could be so fun, but cya!"
+                scene3text[12] = "That's really rude buddy. I'll talk with you tommorow."
+                textnum += 1
+            elif redrawCbutton("Help him", 450, 275):
+                scene3text[11] = "YOU: Here, I'll push you to your next class."
+                scene3text[12] = "STOP! Don't help me without asking first."
+                textnum += 1
+        if textnum == 14:
+            inscene3 = False
+    gameWindow.blit(bg4, (0,0))
+    pygame.display.update()
+    pygame.event.pump()
+    clock.tick(60)
+endbg = pygame.image.load("endbg.png")
+pygame.mixer.music.stop()
+pygame.mixer.music.load("His theme.mp3")
+pygame.mixer.music.play(loops=-1)
+while inend:
+    gameWindow.blit(endbg, (0,0))
+    if redrawTbutton(quitbutton, 150, 535):
+        inend = False
     pygame.display.update()
     pygame.event.pump()
     clock.tick(60)
